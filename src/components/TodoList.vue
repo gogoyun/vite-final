@@ -70,4 +70,22 @@
 			</div>
 		</div>
 	</div>
+	<!-- <div class="no-data">
+		<p>目前尚無待辦事項</p>
+		<img src="https://s3-alpha-sig.figma.com/img/7465/9ab1/8911ab6dcbda98df56e26aa23c6643ac?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=BmQcA76gk9l2y3s7vsRdmBkTjO8lYemchgz2fvvQqd6vEzKKoIKpTWxR5Iz6gkNQvICzQzSjfpXqRAiCmhCNaAQ6Nh7~7r0wEuxTCVOUzW8CGb7FlmUhs6GheqqJYxcxGV-lXtINwxY64LwHtFEXuKVwtdn2SiYuHNupWiTlTN77sAjR8vDZyjkSsuq4CXGVik3UGeHkJnsNAa-6eQ~QB-7HcW4F914N17QBifY47i8f~-AxsoBQ4OAmEM7uO-Jv1g1Wu7FEvy8-otCk79O2XZv6BpUsFTUyvDTR113J0ksi79QkwpeD8I6W4wZ1NxKwmvrxER6-COl7hStdVP1-QQ__" alt="目前尚無待辦事項">
+	</div> -->
 </template>
+<style>
+	.no-data {
+		text-align: center;
+		font-size: 16px;
+		color: #333;
+		margin-top: 60px;
+	}
+	.no-data p {
+		margin-bottom: 16px;
+	}
+	.no-data img {
+		max-width: 240px;
+	}
+</style>
