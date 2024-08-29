@@ -9,6 +9,24 @@
 		password: '',
 		password_confirm: '',
 	})
+	const login = async() => {
+		await signIn({
+			email: data.value.email,
+			password: data.value.password,
+		})
+			.then((res) => {
+				if (res.data.status) {
+					localStorage.setItem('token', JSON.stringify({
+						value: res.data.token,
+						expiry: res.data.exp,
+					}));
+					localStorage.setItem('name', res.data.nickname);
+					router.push({name: 'home'});
+				}
+			}).catch(err => {
+				console.log(err);
+			});
+	}
 	const handleSubmit = async() => {
 		if (data.value.password !== data.value.password_confirm) {
 			alert('密碼不一致請重新輸入');
@@ -22,27 +40,12 @@
 			.then(async(res) => {
 				if (res.data.status) {
 					alert('註冊成功');
-					await signIn({
-						email: data.value.email,
-						password: data.value.password,
-					})
-						.then((res) => {
-							if (res.data.status) {
-								localStorage.setItem('token', JSON.stringify({
-									value: res.data.token,
-									expiry: res.data.exp,
-								}));
-								localStorage.setItem('name', res.data.nickname);
-								router.push({name: 'home'});
-							}
-						}).catch(err => {
-							console.log(err);
-						});
+					login();
 				}else{
 					alert(res.data.message);
 				}
 			}).catch(err => {
-				console.log(err);
+				alert(err.response.data.message);
 			});
 		}
 	}

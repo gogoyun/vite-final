@@ -4,14 +4,20 @@
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/index'
   import { storeToRefs } from 'pinia'
-  const router = useRouter()
-  const logout = () => {
-    localStorage.clear();
-    router.push({name: 'login'});
-  }
+  import { signOut } from '@/utils/api'
   const userStore = useUserStore()
   const { userInfo } = storeToRefs(userStore)
-
+  const router = useRouter()
+  const logout = () => {
+    signOut(userInfo.token)
+      .then(res => {
+        if(res.data.status) {
+          localStorage.clear();
+          router.push({name: 'login'});
+        }
+      })
+  }
+  
 </script>
 
 <template>
