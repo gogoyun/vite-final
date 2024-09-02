@@ -1,64 +1,45 @@
 <script setup>
-  
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '@/stores/index'
+import { storeToRefs } from 'pinia'
+import { getTodos } from '@/utils/api'
+	const userStore = useUserStore()
+  const { userInfo } = storeToRefs(userStore)
+	const filter = ref('');
+	const getLists = ref([]);
+	const getItems = ref([]);
+	const changeStatus = (status) => {
+		filter.value = status
+		if(status == 'wait') {
+			getItems.value = getLists.value.filter(item => !item.status)
+		}else if(status =='finish') {
+			getItems.value = getLists.value.filter(item => item.status)
+		}else{
+			getItems.value = getLists.value
+		}
+	}
+  onMounted(async() => {
+		await getTodos(userInfo.value.token)
+			.then(res => {
+				if(res.data.status) {
+					getLists.value = res.data.data;
+				}
+			});
+	})
 </script>
 <template>
-	<div class="todoList_list">
+	<div class="todoList_list" v-if="getItems.length">
 		<ul class="todoList_tab">
-			<li><a href="#" class="active">全部</a></li>
-			<li><a href="#">待完成</a></li>
-			<li><a href="#">已完成</a></li>
+			<li><a :class="(filter=='') ? 'active' : ''" @click="changeStatus('')">全部</a></li>
+			<li><a :class="(filter=='wait') ? 'active' : ''" @click="changeStatus('wait')">待完成</a></li>
+			<li><a :class="(filter=='finish') ? 'active' : ''" @click="changeStatus('finish')">已完成</a></li>
 		</ul>
 		<div class="todoList_items">
 			<ul class="todoList_item">
-				<li>
+				<li v-for="(item, index) in getItems" :key="index">
 					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true">
-						<span>把冰箱發霉的檸檬拿去丟</span>
-					</label>
-					<a href="#">
-						<i class="fa fa-times"></i>
-					</a>
-				</li>
-				<li>
-					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true">
-						<span>打電話叫媽媽匯款給我</span>
-					</label>
-					<a href="#">
-						<i class="fa fa-times"></i>
-					</a>
-				</li>
-				<li>
-					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true">
-						<span>整理電腦資料夾</span>
-					</label>
-					<a href="#">
-						<i class="fa fa-times"></i>
-					</a>
-				</li>
-				<li>
-					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true">
-						<span>繳電費水費瓦斯費</span>
-					</label>
-					<a href="#">
-						<i class="fa fa-times"></i>
-					</a>
-				</li>
-				<li>
-					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true">
-						<span>約vicky禮拜三泡溫泉</span>
-					</label>
-					<a href="#">
-						<i class="fa fa-times"></i>
-					</a>
-				</li>
-				<li>
-					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true">
-						<span>約ada禮拜四吃晚餐</span>
+						<input class="todoList_input" type="checkbox" value="true" :checked="item.status">
+						<span>{{ item.content }}</span>
 					</label>
 					<a href="#">
 						<i class="fa fa-times"></i>
@@ -66,14 +47,14 @@
 				</li>
 			</ul>
 			<div class="todoList_statistics">
-				<p> 5 個已完成項目</p>
+				<p> {{ getItems.length }} 個已完成項目</p>
 			</div>
 		</div>
 	</div>
-	<!-- <div class="no-data">
+	<div class="no-data" v-else>
 		<p>目前尚無待辦事項</p>
 		<img src="https://s3-alpha-sig.figma.com/img/7465/9ab1/8911ab6dcbda98df56e26aa23c6643ac?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=BmQcA76gk9l2y3s7vsRdmBkTjO8lYemchgz2fvvQqd6vEzKKoIKpTWxR5Iz6gkNQvICzQzSjfpXqRAiCmhCNaAQ6Nh7~7r0wEuxTCVOUzW8CGb7FlmUhs6GheqqJYxcxGV-lXtINwxY64LwHtFEXuKVwtdn2SiYuHNupWiTlTN77sAjR8vDZyjkSsuq4CXGVik3UGeHkJnsNAa-6eQ~QB-7HcW4F914N17QBifY47i8f~-AxsoBQ4OAmEM7uO-Jv1g1Wu7FEvy8-otCk79O2XZv6BpUsFTUyvDTR113J0ksi79QkwpeD8I6W4wZ1NxKwmvrxER6-COl7hStdVP1-QQ__" alt="目前尚無待辦事項">
-	</div> -->
+	</div>
 </template>
 <style>
 	.no-data {

@@ -27,7 +27,13 @@ export const useUserStore = defineStore('user', () => {
 					localStorage.clear();
 					router.push({name: 'login'});
 				}
-			});
+			}).catch(err => {
+				if(!err.response.data.status) {
+					alert('請重新登入');
+					localStorage.clear();
+					router.push({name: 'login'});
+				}
+			})
 		//將token資訊存入userInfo
 		userInfo.value = {
 			token: JSON.parse(tokenStr).value,

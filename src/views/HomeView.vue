@@ -9,7 +9,7 @@
   const { userInfo } = storeToRefs(userStore)
   const router = useRouter()
   const logout = () => {
-    signOut(userInfo.token)
+    signOut(userInfo.value.token)
       .then(res => {
         if(res.data.status) {
           localStorage.clear();

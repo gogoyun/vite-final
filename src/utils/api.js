@@ -17,3 +17,5 @@ export const signIn = data => baseRequest.post(`${baseURL}users/sign_in`, data);
 export const signOut = token => bearerRequest(token).post(`${baseURL}users/sign_out`);
 //檢查token是否有效
 export const checkToken = token => bearerRequest(token).get(`${baseURL}users/checkout`);
+//取得所有todo
+export const getTodos = token => bearerRequest(token).get(`${baseURL}todos`);
