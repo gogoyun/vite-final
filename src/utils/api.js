@@ -19,3 +19,5 @@ export const signOut = token => bearerRequest(token).post(`${baseURL}users/sign_
 export const checkToken = token => bearerRequest(token).get(`${baseURL}users/checkout`);
 //取得所有todo
 export const getTodos = token => bearerRequest(token).get(`${baseURL}todos`);
+//新增todo
+export const postTodo = (token, data) => bearerRequest(token).post(`${baseURL}todos`, data);

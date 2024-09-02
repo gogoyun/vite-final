@@ -1,34 +1,19 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/stores/index'
-import { storeToRefs } from 'pinia'
-import { getTodos } from '@/utils/api'
-	const userStore = useUserStore()
-  const { userInfo } = storeToRefs(userStore)
+import { ref, defineProps, defineEmits } from 'vue';
+// import { useUserStore } from '@/stores/index'
+// import { storeToRefs } from 'pinia'
+// 	const userStore = useUserStore()
+//  const { userInfo } = storeToRefs(userStore)
 	const filter = ref('');
-	const getLists = ref([]);
-	const getItems = ref([]);
+	const props = defineProps(['getItems'])
+	const emit = defineEmits(['filterStatus'])
 	const changeStatus = (status) => {
 		filter.value = status
-		if(status == 'wait') {
-			getItems.value = getLists.value.filter(item => !item.status)
-		}else if(status =='finish') {
-			getItems.value = getLists.value.filter(item => item.status)
-		}else{
-			getItems.value = getLists.value
-		}
+		emit('filterStatus', status)
 	}
-  onMounted(async() => {
-		await getTodos(userInfo.value.token)
-			.then(res => {
-				if(res.data.status) {
-					getLists.value = res.data.data;
-				}
-			});
-	})
 </script>
 <template>
-	<div class="todoList_list" v-if="getItems.length">
+	<div class="todoList_list">
 		<ul class="todoList_tab">
 			<li><a :class="(filter=='') ? 'active' : ''" @click="changeStatus('')">全部</a></li>
 			<li><a :class="(filter=='wait') ? 'active' : ''" @click="changeStatus('wait')">待完成</a></li>
@@ -51,7 +36,7 @@ import { getTodos } from '@/utils/api'
 			</div>
 		</div>
 	</div>
-	<div class="no-data" v-else>
+	<div class="no-data" v-if="!getItems.length && !filter">
 		<p>目前尚無待辦事項</p>
 		<img src="https://s3-alpha-sig.figma.com/img/7465/9ab1/8911ab6dcbda98df56e26aa23c6643ac?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=BmQcA76gk9l2y3s7vsRdmBkTjO8lYemchgz2fvvQqd6vEzKKoIKpTWxR5Iz6gkNQvICzQzSjfpXqRAiCmhCNaAQ6Nh7~7r0wEuxTCVOUzW8CGb7FlmUhs6GheqqJYxcxGV-lXtINwxY64LwHtFEXuKVwtdn2SiYuHNupWiTlTN77sAjR8vDZyjkSsuq4CXGVik3UGeHkJnsNAa-6eQ~QB-7HcW4F914N17QBifY47i8f~-AxsoBQ4OAmEM7uO-Jv1g1Wu7FEvy8-otCk79O2XZv6BpUsFTUyvDTR113J0ksi79QkwpeD8I6W4wZ1NxKwmvrxER6-COl7hStdVP1-QQ__" alt="目前尚無待辦事項">
 	</div>
