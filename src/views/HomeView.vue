@@ -5,7 +5,7 @@
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/index'
   import { storeToRefs } from 'pinia'
-  import { signOut, getTodos, postTodo, delTodo } from '@/utils/api'
+  import { signOut, getTodos, postTodo, delTodo, toggleTodo } from '@/utils/api'
   const userStore = useUserStore()
   const { userInfo } = storeToRefs(userStore)
   const router = useRouter()
@@ -38,8 +38,8 @@
       content: newContent.value
     }).then(res => {
       if(res.data.status) {
-        alert('新增成功')
-        getLists.value.push(res.data.newTodo)
+        // 回吐的資料中沒有id，toogle會有問題，改更新列表
+        getTodoList()
         newContent.value = ''
         filterStatus(filter.value);
         const itemNonLength = getLists.value.filter(item => !item.status).length
@@ -62,6 +62,17 @@
         console.log(err)
       })
   }
+  // 切換待辦事項狀態
+  const toggleStatus = async(item) => {
+    await toggleTodo(userInfo.value.token, item.id)
+      .then(()=> {
+        getTodoList()
+        const itemNonLength = getLists.value.filter(item => !item.status).length
+        getItemLength(itemNonLength)
+      }).catch(err => {
+        console.log(err)
+      })
+  }
   // 篩選待辦事項列表
   const filterStatus = (status) => {
 		if(status == 'wait') {
@@ -71,21 +82,24 @@
 			getItems.value = getLists.value.filter(item => item.status)
       filter.value = 'finish'
 		}else{
-      getItems.value = getLists.value
+      getItems.value = getLists.value.sort((a, b) => a.status - b.status)
       filter.value = ''
     }
 	}
-  onMounted(async() => {
+  const getTodoList = async() => {
     // 取得待辦事項列表
 		await getTodos(userInfo.value.token)
 			.then(res => {
 				if(res.data.status) {
 					getLists.value = res.data.data;
-          getItems.value = res.data.data;
+          filterStatus(filter.value);
           const itemNonLength = getLists.value.filter(item => !item.status).length
           getItemLength(itemNonLength)
 				}
 			});
+  }
+  onMounted(async() => {
+    getTodoList()
 	})
 </script>
 
@@ -106,7 +120,12 @@
             <i class="fa fa-plus"></i>
           </a>
         </div>
-        <TodoList :getItems="getItems" :itemLengthText="itemLengthText" v-on:filter-status="filterStatus" v-on:del-item="delItem" />
+        <TodoList
+          :getItems="getItems"
+          :itemLengthText="itemLengthText"
+          v-on:filter-status="filterStatus"
+          v-on:del-item="delItem"
+          v-on:toggle-status="toggleStatus" />
       </div>
     </div>
   </div>

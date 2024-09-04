@@ -23,3 +23,5 @@ export const getTodos = token => bearerRequest(token).get(`${baseURL}todos`);
 export const postTodo = (token, data) => bearerRequest(token).post(`${baseURL}todos`, data);
 //刪除Todo
 export const delTodo = (token, id) => bearerRequest(token).delete(`${baseURL}todos/${id}`);
+//切換待辦事項狀態
+export const toggleTodo = (token, id) => bearerRequest(token).patch(`${baseURL}todos/${id}/toggle`);

@@ -5,7 +5,7 @@
 		getItems: Array,
 		itemLengthText: String
 	});
-	const emit = defineEmits(['filterStatus', 'delItem'])
+	const emit = defineEmits(['filterStatus', 'delItem', 'toggleStatus']);
 	const changeStatus = (status) => {
 		filter.value = status
 		emit('filterStatus', status)
@@ -15,6 +15,12 @@
 		if(!item) return
 		if(!confirm(`確定要刪除 ${item.content} 嗎?`)) return
 		emit('delItem', item)
+	}
+	// 完成代辦事項
+	const toggleStatus = (item) => {
+		if(!item) return
+		emit('toggleStatus', item)
+		emit('filterStatus', filter.value)
 	}
 </script>
 <template>
@@ -28,7 +34,7 @@
 			<ul class="todoList_item">
 				<li v-for="(item, index) in getItems" :key="index">
 					<label class="todoList_label">
-						<input class="todoList_input" type="checkbox" value="true" :checked="item.status">
+						<input class="todoList_input" type="checkbox" value="true" v-model="item.status" @click="toggleStatus(item)">
 						<span>{{ item.content }}</span>
 					</label>
 					<a @click="delItem(item)">
