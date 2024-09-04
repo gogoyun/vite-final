@@ -21,7 +21,7 @@
 						expiry: res.data.exp,
 					}));
 					localStorage.setItem('name', res.data.nickname);
-					router.push({name: 'home'});
+					router.push({name: 'todo'});
 				}
 			}).catch(err => {
 				console.log(err);
