@@ -1,11 +1,10 @@
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue';
-// import { useUserStore } from '@/stores/index'
-// import { storeToRefs } from 'pinia'
-// 	const userStore = useUserStore()
-//  const { userInfo } = storeToRefs(userStore)
+	import { ref, defineProps, defineEmits } from 'vue';
 	const filter = ref('');
-	const props = defineProps(['getItems'])
+	const props = defineProps({
+		getItems: Array,
+		itemLengthText: String
+	});
 	const emit = defineEmits(['filterStatus'])
 	const changeStatus = (status) => {
 		filter.value = status
@@ -32,7 +31,7 @@ import { ref, defineProps, defineEmits } from 'vue';
 				</li>
 			</ul>
 			<div class="todoList_statistics">
-				<p> {{ getItems.length }} 個已完成項目</p>
+				<p> {{ itemLengthText }}</p>
 			</div>
 		</div>
 	</div>
