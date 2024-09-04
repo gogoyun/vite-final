@@ -5,10 +5,16 @@
 		getItems: Array,
 		itemLengthText: String
 	});
-	const emit = defineEmits(['filterStatus'])
+	const emit = defineEmits(['filterStatus', 'delItem'])
 	const changeStatus = (status) => {
 		filter.value = status
 		emit('filterStatus', status)
+	}
+	// 刪除待辦事項
+	const delItem = (item) => {
+		if(!item) return
+		if(!confirm(`確定要刪除 ${item.content} 嗎?`)) return
+		emit('delItem', item)
 	}
 </script>
 <template>
@@ -25,7 +31,7 @@
 						<input class="todoList_input" type="checkbox" value="true" :checked="item.status">
 						<span>{{ item.content }}</span>
 					</label>
-					<a href="#">
+					<a @click="delItem(item)">
 						<i class="fa fa-times"></i>
 					</a>
 				</li>

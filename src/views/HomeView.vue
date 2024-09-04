@@ -5,7 +5,7 @@
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/index'
   import { storeToRefs } from 'pinia'
-  import { signOut, getTodos, postTodo } from '@/utils/api'
+  import { signOut, getTodos, postTodo, delTodo } from '@/utils/api'
   const userStore = useUserStore()
   const { userInfo } = storeToRefs(userStore)
   const router = useRouter()
@@ -23,6 +23,7 @@
   const getItems = ref([])
   const filter = ref('')
   const itemLengthText = ref('')
+  // 取得待辦事項數量, 判斷文字顯示
   const getItemLength = (itemNonLength) => {
     if(itemNonLength){
       itemLengthText.value = `${itemNonLength} 個待完成項目`
@@ -30,6 +31,7 @@
       itemLengthText.value = '目前尚無待辦事項'
     }
   }
+  // 新增待辦事項
   const addItem = () => {
     if(!newContent.value) return
     postTodo(userInfo.value.token, {
@@ -45,6 +47,22 @@
       }
     })
   }
+  // 刪除待辦事項
+  const delItem = async(item) => {
+    await delTodo(userInfo.value.token, item.id)
+      .then(res=>{
+        if(res.data.status) {
+          alert(res.data.message)
+          getLists.value = getLists.value.filter(list => item.id !== list.id)
+          filterStatus(filter.value);
+          const itemNonLength = getLists.value.filter(item => !item.status).length
+          getItemLength(itemNonLength)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+  }
+  // 篩選待辦事項列表
   const filterStatus = (status) => {
 		if(status == 'wait') {
 			getItems.value = getLists.value.filter(item => !item.status)
@@ -58,6 +76,7 @@
     }
 	}
   onMounted(async() => {
+    // 取得待辦事項列表
 		await getTodos(userInfo.value.token)
 			.then(res => {
 				if(res.data.status) {
@@ -87,7 +106,7 @@
             <i class="fa fa-plus"></i>
           </a>
         </div>
-        <TodoList :getItems="getItems" :itemLengthText="itemLengthText" v-on:filter-status="filterStatus" />
+        <TodoList :getItems="getItems" :itemLengthText="itemLengthText" v-on:filter-status="filterStatus" v-on:del-item="delItem" />
       </div>
     </div>
   </div>

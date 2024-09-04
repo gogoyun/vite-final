@@ -21,3 +21,5 @@ export const checkToken = token => bearerRequest(token).get(`${baseURL}users/che
 export const getTodos = token => bearerRequest(token).get(`${baseURL}todos`);
 //新增todo
 export const postTodo = (token, data) => bearerRequest(token).post(`${baseURL}todos`, data);
+//刪除Todo
+export const delTodo = (token, id) => bearerRequest(token).delete(`${baseURL}todos/${id}`);
