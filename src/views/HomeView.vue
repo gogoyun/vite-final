@@ -39,6 +39,7 @@
     loading.value = true
     if(!newContent.value.trim()) {
       alert('請輸入待辦事項')
+      loading.value = false
       return
     }
     postTodo(userInfo.value.token, {
