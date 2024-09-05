@@ -7,7 +7,9 @@
 		email: '',
 		password: '',
 	})
+	const loading = ref(false)
 	const handleSubmit = async() => {
+		loading.value = true
 		await signIn({
 			email: data.value.email,
 			password: data.value.password,
@@ -19,10 +21,12 @@
 						expiry: res.data.exp,
 					}));
 					localStorage.setItem('name', res.data.nickname);
+					loading.value = false;
 					router.push({name: 'todo'});
 				}
 			}).catch(err => {
 				alert(err.response.data.message);
+				loading.value = false;
 			});
 	}
 </script>
@@ -33,7 +37,7 @@
 		<input class="formControls_input" type="text" id="email" name="email" placeholder="請輸入 email" required v-model="data.email">
 		<label class="formControls_label" for="pwd">密碼</label>
 		<input class="formControls_input" type="password" name="pwd" id="pwd" minlength="6" placeholder="請輸入密碼" required v-model="data.password">
-		<input class="formControls_btnSubmit" type="submit" value="登入">
+		<input class="formControls_btnSubmit" type="submit" :value="loading?'登入中':'登入'" :disabled="loading">
 		<a class="formControls_btnLink" @click="router.push({name: 'register'})">註冊帳號</a>
 	</form>
 </template>

@@ -281,7 +281,10 @@ nav ul a span {
   text-align: center;
   font-size: 1rem;
 }
-
+.formControls .formControls_btnSubmit:disabled {
+  background: #9F9A91;
+  cursor: not-allowed;
+}
 .formControls a {
   text-decoration: none;
 }
@@ -410,6 +413,11 @@ nav ul a span {
   top: 4px;
   right: 4px;
   padding: 10px;
+}
+.inputBox a.disabled {
+  pointer-events: none;
+  background: gray;
+  text-decoration: none;
 }
 
 .todoList_list {

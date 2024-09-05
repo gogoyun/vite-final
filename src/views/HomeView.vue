@@ -9,6 +9,7 @@
   const userStore = useUserStore()
   const { userInfo } = storeToRefs(userStore)
   const router = useRouter()
+  const loading = ref(false)
   const logout = () => {
     signOut(userInfo.value.token)
       .then(res => {
@@ -35,6 +36,7 @@
   }
   // 新增待辦事項
   const addItem = () => {
+    loading.value = true
     if(!newContent.value.trim()) {
       alert('請輸入待辦事項')
       return
@@ -49,9 +51,11 @@
         filterStatus(filter.value);
         const itemNonLength = getLists.value.filter(item => !item.status).length
         getItemLength(itemNonLength)
+        loading.value = false
       }
     }).catch(err=>{
       console.log(err)
+      loading.value = false
     })
   }
   // 刪除待辦事項
@@ -125,7 +129,7 @@
       <div class="todoList_Content">
         <div class="inputBox">
           <input type="text" placeholder="請輸入待辦事項" v-model="newContent">
-          <a @click="addItem">
+          <a @click="addItem" :class="loading?'disabled':''">
             <i class="fa fa-plus"></i>
           </a>
         </div>

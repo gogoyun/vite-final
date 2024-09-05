@@ -25,7 +25,10 @@ const router = createRouter({
         }
       ]
     },
-    
+    {
+      path: '/:catchAll(.*)', // 404
+      redirect: '/' // 重定向到首頁
+    }
   ]
 })
 
