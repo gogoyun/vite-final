@@ -16,6 +16,8 @@
           localStorage.clear();
           router.push({name: 'login'});
         }
+      }).catch(err => {
+        console.log(err)
       })
   }
   const newContent = ref('')
@@ -33,7 +35,10 @@
   }
   // 新增待辦事項
   const addItem = () => {
-    if(!newContent.value) return
+    if(!newContent.value.trim()) {
+      alert('請輸入待辦事項')
+      return
+    }
     postTodo(userInfo.value.token, {
       content: newContent.value
     }).then(res => {
@@ -45,6 +50,8 @@
         const itemNonLength = getLists.value.filter(item => !item.status).length
         getItemLength(itemNonLength)
       }
+    }).catch(err=>{
+      console.log(err)
     })
   }
   // 刪除待辦事項
@@ -96,7 +103,9 @@
           const itemNonLength = getLists.value.filter(item => !item.status).length
           getItemLength(itemNonLength)
 				}
-			});
+			}).catch(err => {
+        console.log(err)
+      })
   }
   onMounted(async() => {
     getTodoList()
